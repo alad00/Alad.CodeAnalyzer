@@ -1,0 +1,30 @@
+name: NuGet
+on:
+  push:
+    branches: [ release ]
+jobs:
+  publish_nuget:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Authenticate to NuGet
+      run: dotnet nuget update source "alad" --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --configfile NuGet.Config
+    - name: Restore dependencies
+      run: dotnet restore "NuGet.sln"
+    - name: Build
+      run: dotnet build --no-restore "NuGet.sln"
+    - name: Test
+      run: dotnet test --no-build --verbosity normal "NuGet.sln"
+    - name: Build release
+      run: dotnet build --configuration "Release" --no-restore "NuGet.sln"
+    - name: Pack
+      run: dotnet pack --configuration Release "NuGet.sln"
+    - name: Push
+      run: dotnet nuget push "src/*/bin/Release/*.nupkg" --source "alad" --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }}
