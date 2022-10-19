@@ -20,8 +20,8 @@ jobs:
       run: dotnet restore "NuGet.sln"
     - name: Build
       run: dotnet build --no-restore "NuGet.sln"
-    - name: Test
-      run: dotnet test --no-build --verbosity normal "NuGet.sln"
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal "NuGet.sln"
     - name: Build release
       run: dotnet build --configuration "Release" --no-restore "NuGet.sln"
     - name: Pack
