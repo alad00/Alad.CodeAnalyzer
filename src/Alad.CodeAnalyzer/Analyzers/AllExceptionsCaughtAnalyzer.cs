@@ -10,16 +10,16 @@ using System.Linq;
 namespace Alad.CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class LetExceptionsPropagateAnalyzer : DiagnosticAnalyzer
+    public class AllExceptionsCaughtAnalyzer : DiagnosticAnalyzer
     {
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
-            id: AladDiagnosticCodes.Security.LetExceptionsPropagate,
-            title: "Catch di tutte le eccezioni incondizionatamente",
-            messageFormat: "Intercetta solo le eccezioni note, lascia che le altre vengano intercettate e gestite esternamente",
+            id: AladDiagnosticCodes.Security.AllExceptionsCaught,
+            title: "Intercettare solo le eccezioni note, lasciare che le altre vengano intercettate e gestite esternamente",
+            messageFormat: "Catch incondizionato di {0}",
             category: nameof(AladDiagnosticCodes.Security),
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/tree/master/docs/codes/{AladDiagnosticCodes.Security.LetExceptionsPropagate}.md");
+            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/tree/master/docs/codes/{AladDiagnosticCodes.Security.AllExceptionsCaught}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Rule
@@ -30,13 +30,13 @@ namespace Alad.CodeAnalyzer.Analyzers
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.CatchClause);
+            context.RegisterOperationAction(Analyze, OperationKind.CatchClause);
         }
 
-        static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        static void Analyze(OperationAnalysisContext context)
         {
-            var catchClause = (CatchClauseSyntax)context.Node;
-            var operation = (ICatchClauseOperation)context.SemanticModel.GetOperation(catchClause);
+            var operation = (ICatchClauseOperation)context.Operation;
+            var syntax = (CatchClauseSyntax)operation.Syntax;
 
             // se ha un filtro `when (...)` lasciamo passare
             if (operation.Filter != null)
@@ -52,12 +52,12 @@ namespace Alad.CodeAnalyzer.Analyzers
             ) return;
 
             // se contiene uno statement `throw;` (rethrow senza modificare l'eccezione) lasciamo passare
-            var doesRethrow = catchClause.Block.DescendantNodes(n => true).Any(n => n is ThrowStatementSyntax);
+            var doesRethrow = syntax.Block.DescendantNodes(n => true).Any(n => n is ThrowStatementSyntax);
             if (doesRethrow)
                 return;
 
-            var location = catchClause.CatchKeyword.GetLocation();
-            var diagnostic = Diagnostic.Create(Rule, location);
+            var location = syntax.CatchKeyword.GetLocation();
+            var diagnostic = Diagnostic.Create(Rule, location, operation.ExceptionType.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

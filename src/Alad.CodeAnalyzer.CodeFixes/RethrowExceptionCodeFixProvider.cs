@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Alad.CodeAnalyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(LetExceptionsPropagateCodeFixProvider)), Shared]
-    public class LetExceptionsPropagateCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RethrowExceptionCodeFixProvider)), Shared]
+    public class RethrowExceptionCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            AladDiagnosticCodes.Security.LetExceptionsPropagate
+            AladDiagnosticCodes.Security.AllExceptionsCaught
         );
 
         public sealed override FixAllProvider GetFixAllProvider()
@@ -36,9 +36,9 @@ namespace Alad.CodeAnalyzer
 
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Propaga eccezione",
+                    title: "Lascia che l'eccezione venga propagata",
                     createChangedDocument: c => AddThrow(context.Document, declaration, c),
-                    equivalenceKey: AladDiagnosticCodes.Security.LetExceptionsPropagate + "_ADDTHROW"),
+                    equivalenceKey: AladEquivalenceKeys.RethrowException),
                 diagnostic);
         }
 
@@ -46,16 +46,29 @@ namespace Alad.CodeAnalyzer
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-            // se il blocco del `catch` non è vuoto, aggiungiamo un `throw` alla fine
-            if (catchClause.Block.ChildNodes().Any())
+            var catchBlockChildren = catchClause.Block.ChildNodes();
+            var catchBlockChildrenExceptReturn = catchBlockChildren.Where(n => !(n is ReturnStatementSyntax));
+
+            // se il blocco del `catch` non è vuoto, aggiungiamo un `throw;` alla fine,
+            // se contiene solo un'espressione `return …;` è considerato vuoto
+            if (catchBlockChildrenExceptReturn.Any())
             {
                 var throwStatement = SyntaxFactory.ThrowStatement();
-                var newBlock = catchClause.Block.AddStatements(throwStatement);
+
+                BlockSyntax newBlock = catchClause.Block;
+
+                // se termina con un `return …;`, il return viene rimpiazzato dal `throw;`
+                var lastNode = catchBlockChildren.LastOrDefault();
+                if (lastNode is ReturnStatementSyntax)
+                    newBlock = newBlock.RemoveNode(lastNode, SyntaxRemoveOptions.KeepLeadingTrivia);
+
+                // aggiungo `throw;`
+                newBlock = newBlock.AddStatements(throwStatement);
 
                 var newRoot = root.ReplaceNode(catchClause.Block, newBlock);
                 return document.WithSyntaxRoot(newRoot);
             }
-            
+
             // altrimenti se è vuoto possiamo rimuoverlo in toto
             else
             {
@@ -69,7 +82,7 @@ namespace Alad.CodeAnalyzer
                     return document.WithSyntaxRoot(newRoot);
                 }
 
-                // altrimenti togliamo solo il blocco del catch
+                // altrimenti togliamo solo il blocco del `catch`
                 else
                 {
                     var newTryBlock = tryBlock.RemoveNode(catchClause, SyntaxRemoveOptions.AddElasticMarker);

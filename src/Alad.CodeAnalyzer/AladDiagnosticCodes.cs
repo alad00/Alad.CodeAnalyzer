@@ -6,8 +6,11 @@ namespace Alad.CodeAnalyzer
     {
         public static class Security
         {
-            /// <summary>Non fare <see langword="catch"/> di tutte le <see cref="Exception"/> indiscriminatamente.</summary>
-            public const string LetExceptionsPropagate = "ALAD0001";
+            /// <summary>Catch di tutte le eccezioni incondizionatamente.</summary>
+            public const string AllExceptionsCaught = "ALAD0001";
+
+            /// <summary>Eccezione non specializzata.</summary>
+            public const string GenericException = "ALAD0002";
         }
     }
 }
