@@ -7,8 +7,8 @@ SPDX-License-Identifier: MIT
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-	<!--<ImplicitUsings>enable</ImplicitUsings>-->
-	<!--<Nullable>enable</Nullable>-->
+    <!--<ImplicitUsings>enable</ImplicitUsings>-->
+    <!--<Nullable>enable</Nullable>-->
     <IsPackable>false</IsPackable>
 
     <!-- Avoid ID conflicts with the package project. -->
@@ -25,8 +25,8 @@ SPDX-License-Identifier: MIT
 
   <ItemGroup>
     <None Include="..\..\docs\codes\**\*">
-	  <DependentUpon>AladDiagnosticCodes.cs</DependentUpon>
-	  <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
+      <DependentUpon>AladDiagnosticCodes.cs</DependentUpon>
+      <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
     </None>
   </ItemGroup>
 
