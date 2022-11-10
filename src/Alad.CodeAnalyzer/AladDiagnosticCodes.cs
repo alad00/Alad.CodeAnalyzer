@@ -7,6 +7,8 @@ namespace Alad.CodeAnalyzer
     /// </summary>
     public static class AladDiagnosticCodes
     {
+        #region Sicurezza e performance (da ALAD0000 ad ALAD0999)
+
         /// <summary>
         /// Sicurezza.
         /// </summary>
@@ -44,30 +46,57 @@ namespace Alad.CodeAnalyzer
         }
 
         /// <summary>
+        /// Logging.
+        /// </summary>
+        public static class Logging
+        {
+            /// <summary>Log di un singolo evento suddiviso du più righe.</summary>
+            public const string FragmentedLog = "ALAD0300";
+
+            /// <summary>Log in un blocco catch senza eccezione.</summary>
+            public const string LogWithoutException = "ALAD0301";
+
+            /// <summary>Log ornamentale.</summary>
+            public const string DecorativeLog = "ALAD0302";
+        }
+
+        #endregion
+
+        #region Pulizia del codice (da ALAD1000 ad ALAD1999)
+
+        /// <summary>
         /// Convenzioni di denominazione.
         /// </summary>
         public static class NamingConventions
         {
             /// <summary>Nome classe non rispetta le convenzioni.</summary>
-            public const string ClassName = "ALAD0300";
+            public const string ClassName = "ALAD1000";
 
             /// <summary>Nome interfaccia non rispetta le convenzioni.</summary>
-            public const string InterfaceName = "ALAD0301";
+            public const string InterfaceName = "ALAD1001";
 
             /// <summary>Nome field pubblico non rispetta le convenzioni.</summary>
-            public const string PublicFieldName = "ALAD0302";
+            public const string PublicFieldName = "ALAD1002";
 
             /// <summary>Nome field privato non rispetta le convenzioni.</summary>
-            public const string PrivateFieldName = "ALAD0303";
+            public const string PrivateFieldName = "ALAD1003";
 
             /// <summary>Nome field privato statico non rispetta le convenzioni.</summary>
-            public const string PrivateStaticFieldName = "ALAD0304";
+            public const string PrivateStaticFieldName = "ALAD1004";
 
             /// <summary>Nome parametro non rispetta le convenzioni.</summary>
-            public const string ArgumentName = "ALAD0305";
+            public const string ArgumentName = "ALAD1005";
 
             /// <summary>Nome namespace non rispetta le convenzioni.</summary>
-            public const string NamespaceName = "ALAD0306";
+            public const string NamespaceName = "ALAD1006";
         }
+
+        public static class SuperfluousCode
+        {
+            /// <summary>Blocco finally superfluo.</summary>
+            public const string EmptyFinallyBlock = "ALAD1100";
+        }
+
+        #endregion
     }
 }

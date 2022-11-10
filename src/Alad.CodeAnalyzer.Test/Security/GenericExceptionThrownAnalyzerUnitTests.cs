@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VerifyCS = Alad.CodeAnalyzer.Test.CSharpAnalyzerVerifier<
-    Alad.CodeAnalyzer.Analyzers.GenericExceptionAnalyzer>;
+    Alad.CodeAnalyzer.Security.GenericExceptionAnalyzer>;
 
-namespace Alad.CodeAnalyzer.Test;
+namespace Alad.CodeAnalyzer.Test.Security;
 
 [TestClass]
 public class GenericExceptionThrownAnalyzerUnitTest

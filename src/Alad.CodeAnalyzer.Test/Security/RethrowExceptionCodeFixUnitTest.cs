@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VerifyCS = Alad.CodeAnalyzer.Test.CSharpCodeFixVerifier<
-    Alad.CodeAnalyzer.Analyzers.AllExceptionsCaughtAnalyzer,
+    Alad.CodeAnalyzer.Security.AllExceptionsCaughtAnalyzer,
     Alad.CodeAnalyzer.RethrowExceptionCodeFixProvider>;
 
-namespace Alad.CodeAnalyzer.Test;
+namespace Alad.CodeAnalyzer.Test.Security;
 
 [TestClass]
 public class RethrowExceptionCodeFixUnitTest

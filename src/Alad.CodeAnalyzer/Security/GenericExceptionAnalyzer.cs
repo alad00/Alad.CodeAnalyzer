@@ -7,12 +7,12 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace Alad.CodeAnalyzer.Analyzers
+namespace Alad.CodeAnalyzer.Security
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class GenericExceptionAnalyzer : DiagnosticAnalyzer
     {
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Security.GenericException,
             title: "Usare un tipo più specifico di eccezione",
             messageFormat: "{0} non specializzata",

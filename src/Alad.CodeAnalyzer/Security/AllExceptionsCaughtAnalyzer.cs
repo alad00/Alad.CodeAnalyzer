@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
@@ -7,12 +6,12 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace Alad.CodeAnalyzer.Analyzers
+namespace Alad.CodeAnalyzer.Security
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class AllExceptionsCaughtAnalyzer : DiagnosticAnalyzer
     {
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Security.AllExceptionsCaught,
             title: "Intercettare solo le eccezioni note, lasciare che le altre vengano intercettate e gestite esternamente",
             messageFormat: "Catch incondizionato di {0}",
@@ -48,7 +47,7 @@ namespace Alad.CodeAnalyzer.Analyzers
             // se non è un `catch (Exception)` od un `catch (AggregateException)` lasciamo passare
             if (
                 operation.ExceptionType.ContainingNamespace.Name != nameof(System) ||
-                (operation.ExceptionType.Name != nameof(Exception) && operation.ExceptionType.Name != nameof(AggregateException))
+                operation.ExceptionType.Name != nameof(Exception) && operation.ExceptionType.Name != nameof(AggregateException)
             ) return;
 
             // se contiene uno statement `throw;` (rethrow senza modificare l'eccezione) lasciamo passare
