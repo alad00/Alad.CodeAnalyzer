@@ -1,4 +1,10 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Testing;
+﻿// SPDX-FileCopyrightText: Microsoft
+// SPDX-FileCopyrightText: .NET Foundation and Contributors
+// SPDX-FileCopyrightText: 2022 ALAD SRL
+//
+// SPDX-License-Identifier: MIT
+
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 

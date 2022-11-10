@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: .NET Foundation and Contributors
+#
+# SPDX-License-Identifier: MIT
+
 param($installPath, $toolsPath, $package, $project)
 
 if($project.Object.SupportsPackageDependencyResolution)

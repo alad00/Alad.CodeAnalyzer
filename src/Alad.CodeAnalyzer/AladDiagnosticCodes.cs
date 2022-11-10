@@ -1,4 +1,8 @@
-﻿using System;
+﻿// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+//
+// SPDX-License-Identifier: MIT
+
+using System;
 
 namespace Alad.CodeAnalyzer
 {
@@ -91,6 +95,9 @@ namespace Alad.CodeAnalyzer
             public const string NamespaceName = "ALAD1006";
         }
 
+        /// <summary>
+        /// Codice superfluo.
+        /// </summary>
         public static class SuperfluousCode
         {
             /// <summary>Blocco finally superfluo.</summary>

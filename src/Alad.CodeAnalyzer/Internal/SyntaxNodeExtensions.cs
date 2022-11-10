@@ -1,4 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+//
+// SPDX-License-Identifier: MIT
+
+using Microsoft.CodeAnalysis;
 
 namespace Alad.CodeAnalyzer.Internal
 {

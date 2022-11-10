@@ -1,4 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+//
+// SPDX-License-Identifier: MIT
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VerifyCS = Alad.CodeAnalyzer.Test.CSharpCodeFixVerifier<
     Alad.CodeAnalyzer.Security.AllExceptionsCaughtAnalyzer,
     Alad.CodeAnalyzer.RethrowExceptionCodeFixProvider>;

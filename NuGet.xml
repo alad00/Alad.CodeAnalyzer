@@ -1,9 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
 SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
 
 SPDX-License-Identifier: MIT
 -->
+
+﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
     <add key="alad" value="https://nuget.pkg.github.com/alad00/index.json" protocolVersion="3" />

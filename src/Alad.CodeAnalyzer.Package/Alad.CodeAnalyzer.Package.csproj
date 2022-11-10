@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+
+SPDX-License-Identifier: MIT
+-->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -12,6 +17,8 @@
     <PackageVersion>0.3.0</PackageVersion>
     <RepositoryUrl>https://github.com/alad00/Alad.CodeAnalyzer</RepositoryUrl>
     <Description>Analyzer di Alad per .NET Compiler Platform ("Roslyn").</Description>
+    <Copyright>Copyright (c) 2022 ALAD SRL</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
@@ -25,6 +32,7 @@
 
   <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
+    <None Update="LICENSE" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <Target Name="_AddAnalyzersToOutput">

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+
+SPDX-License-Identifier: MIT
+-->
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="Alad.CodeAnalyzer.73039209-1180-45e0-be2f-6c4f2f507ecb" Version="1.0" Language="en-US" Publisher="ALAD.cloud"/>
