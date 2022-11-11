@@ -25,7 +25,8 @@ jobs:
     - name: Build
       run: msbuild -target:"Build" -property:"DeployExtension=False" -Restore:False "Vsix.sln"
     - name: Test
-      run: vstest.console "src\Alad.CodeAnalyzer.Test\bin\Debug\net6\Alad.CodeAnalyzer.Test.dll"
+      run: mstest -testContainer:"src\Alad.CodeAnalyzer.Test\bin\Debug\net6\Alad.CodeAnalyzer.Test.dll"
+      #run: vstest.console "src\Alad.CodeAnalyzer.Test\bin\Debug\net6\Alad.CodeAnalyzer.Test.dll"
     - name: Build release
       run: msbuild -target:"Build" -property:"Configuration=Release" -property:"DeployExtension=False" -Restore:False "Vsix.sln"
     - name: Upload VSIX artifact
