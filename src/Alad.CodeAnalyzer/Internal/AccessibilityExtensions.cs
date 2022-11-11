@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Alad.CodeAnalyzer.Internal
 {
-    public static class AccessibilityExtension
+    public static class AccessibilityExtensions
     {
         public static string GetCSharpName(this Accessibility accessibility)
         {

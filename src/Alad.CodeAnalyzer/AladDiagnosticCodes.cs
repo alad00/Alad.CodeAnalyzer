@@ -54,7 +54,7 @@ namespace Alad.CodeAnalyzer
         /// </summary>
         public static class Logging
         {
-            /// <summary>Log di un singolo evento suddiviso du più righe.</summary>
+            /// <summary>Log di un singolo evento suddiviso su più righe.</summary>
             public const string FragmentedLog = "ALAD0300";
 
             /// <summary>Log in un blocco catch senza eccezione.</summary>
