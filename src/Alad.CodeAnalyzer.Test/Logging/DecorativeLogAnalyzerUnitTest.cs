@@ -5,12 +5,12 @@
 using Alad.CodeAnalyzer.Test.Logging.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VerifyCS = Alad.CodeAnalyzer.Test.CSharpAnalyzerVerifier<
-    Alad.CodeAnalyzer.Logging.FragmentedLogAnalyzer>;
+    Alad.CodeAnalyzer.Logging.DecorativeLogAnalyzer>;
 
 namespace Alad.CodeAnalyzer.Test.Visibility;
 
 [TestClass]
-public class FragmentedLogAnalyzerUnitTest
+public class DecorativeLogAnalyzerUnitTest
 {
     [TestMethod]
     public async Task NoDiagnosticsExpected()
@@ -29,7 +29,7 @@ class MyClass {
     }
 
     [TestMethod]
-    public async Task DoNotAllowFragmentedLogs()
+    public async Task DoNotAllowDecorativeLogs()
     {
         var test = @"
 using Microsoft.Extensions.Logging;
@@ -37,31 +37,12 @@ using System;
 
 class MyClass {
     MyClass(ILogger logger) {
-        logger.LogInformation(""Inizio operazione A"");
-        {|#0:logger.LogInformation(""Data: {Date}"", DateTime.UtcNow)|};
+        logger.LogInformation({|#0:""------ MyClass ------""|});
     }
 }
 ";
 
-        var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.Logging.FragmentedLog).WithLocation(0);
+        var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.Logging.DecorativeLog).WithLocation(0);
         await VerifyCS.VerifyAnalyzerAsync(test + LoggingStubs.Code, expected);
-    }
-
-    [TestMethod]
-    public async Task AllowSubsequentUnreleatedLogs()
-    {
-        var test = @"
-using Microsoft.Extensions.Logging;
-
-class MyClass {
-    MyClass(ILogger logger) {
-        logger.LogInformation(""Fine operazione A"");
-
-        logger.LogInformation(""Inizio operazione B"");
-    }
-}
-";
-
-        await VerifyCS.VerifyAnalyzerAsync(test + LoggingStubs.Code);
     }
 }

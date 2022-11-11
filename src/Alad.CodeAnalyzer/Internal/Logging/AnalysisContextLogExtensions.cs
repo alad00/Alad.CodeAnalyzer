@@ -6,6 +6,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Alad.CodeAnalyzer.Internal.Logging
 {
@@ -37,6 +39,65 @@ namespace Alad.CodeAnalyzer.Internal.Logging
             return type.Equals(ILogger, SymbolEqualityComparer.Default) ||
                    type.Equals(LoggerExtensions, SymbolEqualityComparer.Default) ||
                    type.Equals(LoggerMessage, SymbolEqualityComparer.Default);
+        }
+
+        public IParameterSymbol GetMessage(IMethodSymbol method)
+        {
+            Debug.Assert(IsLogger(method));
+
+            return method.Parameters
+                .FirstOrDefault(p =>
+                    p.Type.SpecialType == SpecialType.System_String && (
+                        string.Equals(p.Name, "message", StringComparison.Ordinal) ||
+                        string.Equals(p.Name, "messageFormat", StringComparison.Ordinal) ||
+                        string.Equals(p.Name, "formatString", StringComparison.Ordinal)
+                    ));
+        }
+
+        public IParameterSymbol GetException(IMethodSymbol method)
+        {
+            Debug.Assert(IsLogger(method));
+
+            return method.Parameters
+                .FirstOrDefault(p => string.Equals(p.Name, "exception", StringComparison.Ordinal));
+        }
+
+        public IParameterSymbol GetArgs(IMethodSymbol method)
+        {
+            Debug.Assert(IsLogger(method));
+
+            return method.Parameters
+                .FirstOrDefault(p => string.Equals(p.Name, "args", StringComparison.Ordinal));
+        }
+    
+        public IArgumentOperation GetMessage(IInvocationOperation invocation)
+        {
+            var message = GetMessage(invocation.TargetMethod);
+            if (message == null)
+                return null;
+
+            return invocation.Arguments
+                .FirstOrDefault(a => a.Parameter.Equals(message, SymbolEqualityComparer.Default));
+        }
+
+        public IArgumentOperation GetException(IInvocationOperation invocation)
+        {
+            var exception = GetException(invocation.TargetMethod);
+            if (exception == null)
+                return null;
+
+            return invocation.Arguments
+                .FirstOrDefault(a => a.Parameter.Equals(exception, SymbolEqualityComparer.Default));
+        }
+
+        public IArgumentOperation GetArgs(IInvocationOperation invocation)
+        {
+            var args = GetArgs(invocation.TargetMethod);
+            if (args == null)
+                return null;
+
+            return invocation.Arguments
+                .FirstOrDefault(a => a.Parameter.Equals(args, SymbolEqualityComparer.Default));
         }
     }
 
