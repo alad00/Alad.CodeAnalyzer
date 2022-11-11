@@ -29,21 +29,23 @@ namespace Alad.CodeAnalyzer.Internal.Logging
 
         public INamedTypeSymbol LoggerMessage { get; }
 
-        public bool IsLogger(IMethodSymbol method)
-        {
-            return IsLogger(method.ContainingType);
-        }
-
-        public bool IsLogger(INamedTypeSymbol type)
+        public bool IsLoggerType(INamedTypeSymbol type)
         {
             return type.Equals(ILogger, SymbolEqualityComparer.Default) ||
                    type.Equals(LoggerExtensions, SymbolEqualityComparer.Default) ||
                    type.Equals(LoggerMessage, SymbolEqualityComparer.Default);
         }
 
-        public IParameterSymbol GetMessage(IMethodSymbol method)
+        public bool IsLogMethod(IMethodSymbol method)
         {
-            Debug.Assert(IsLogger(method));
+            return IsLoggerType(method.ContainingType) && (
+                method.Name.Equals("Define", StringComparison.Ordinal) ||
+                method.Name.StartsWith("Log", StringComparison.Ordinal));
+        }
+
+        public IParameterSymbol GetMessageParameter(IMethodSymbol method)
+        {
+            Debug.Assert(IsLogMethod(method));
 
             return method.Parameters
                 .FirstOrDefault(p =>
@@ -54,25 +56,25 @@ namespace Alad.CodeAnalyzer.Internal.Logging
                     ));
         }
 
-        public IParameterSymbol GetException(IMethodSymbol method)
+        public IParameterSymbol GetExceptionParameter(IMethodSymbol method)
         {
-            Debug.Assert(IsLogger(method));
+            Debug.Assert(IsLogMethod(method));
 
             return method.Parameters
                 .FirstOrDefault(p => string.Equals(p.Name, "exception", StringComparison.Ordinal));
         }
 
-        public IParameterSymbol GetArgs(IMethodSymbol method)
+        public IParameterSymbol GetArgsParameter(IMethodSymbol method)
         {
-            Debug.Assert(IsLogger(method));
+            Debug.Assert(IsLogMethod(method));
 
             return method.Parameters
                 .FirstOrDefault(p => string.Equals(p.Name, "args", StringComparison.Ordinal));
         }
     
-        public IArgumentOperation GetMessage(IInvocationOperation invocation)
+        public IArgumentOperation GetMessageArgument(IInvocationOperation invocation)
         {
-            var message = GetMessage(invocation.TargetMethod);
+            var message = GetMessageParameter(invocation.TargetMethod);
             if (message == null)
                 return null;
 
@@ -80,9 +82,9 @@ namespace Alad.CodeAnalyzer.Internal.Logging
                 .FirstOrDefault(a => a.Parameter.Equals(message, SymbolEqualityComparer.Default));
         }
 
-        public IArgumentOperation GetException(IInvocationOperation invocation)
+        public IArgumentOperation GetExceptionArgument(IInvocationOperation invocation)
         {
-            var exception = GetException(invocation.TargetMethod);
+            var exception = GetExceptionParameter(invocation.TargetMethod);
             if (exception == null)
                 return null;
 
@@ -90,9 +92,9 @@ namespace Alad.CodeAnalyzer.Internal.Logging
                 .FirstOrDefault(a => a.Parameter.Equals(exception, SymbolEqualityComparer.Default));
         }
 
-        public IArgumentOperation GetArgs(IInvocationOperation invocation)
+        public IArgumentOperation GetArgsArgument(IInvocationOperation invocation)
         {
-            var args = GetArgs(invocation.TargetMethod);
+            var args = GetArgsParameter(invocation.TargetMethod);
             if (args == null)
                 return null;
 
@@ -127,7 +129,7 @@ namespace Alad.CodeAnalyzer.Internal.Logging
                         var invocation = (IInvocationOperation)context3.Operation;
 
                         // questa action è interessata solo alle chiamate ai metodi di logging
-                        if (!typeSymbols.IsLogger(invocation.TargetMethod))
+                        if (!typeSymbols.IsLogMethod(invocation.TargetMethod))
                             return;
 
                         action(context3, typeSymbols);

@@ -38,7 +38,7 @@ namespace Alad.CodeAnalyzer.Logging
         {
             var invocation = (IInvocationOperation)context.Operation;
 
-            var message = logSymbols.GetMessage(invocation);
+            var message = logSymbols.GetMessageArgument(invocation);
 
             // se non ha un message, non è un metodo di log rilevante
             if (message == null)
