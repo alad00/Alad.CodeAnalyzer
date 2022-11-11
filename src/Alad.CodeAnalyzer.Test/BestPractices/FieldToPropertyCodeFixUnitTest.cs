@@ -54,6 +54,19 @@ class MyClass {
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsWhenFieldIsInEnum()
+    {
+        var test = @"
+enum MyEnum {
+    Field0,
+    Field1 = 1,
+    Field2,
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task CodeFixConvertPublicFieldToProperty()
     {
         var test = @"

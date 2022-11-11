@@ -13,6 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alad.CodeAnalyzer.Test", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alad.CodeAnalyzer.Vsix", "src\Alad.CodeAnalyzer.Vsix\Alad.CodeAnalyzer.Vsix.csproj", "{56BFBE62-CB4B-4BB1-BD7F-8BEF4823676C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB5A3844-F42E-42A6-9609-A7C02962C31E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
