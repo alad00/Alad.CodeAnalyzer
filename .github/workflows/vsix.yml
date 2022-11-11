@@ -22,6 +22,10 @@ jobs:
       run: del NuGet.Config
     - name: Restore dependencies
       run: msbuild -target:"Restore" "Vsix.sln"
+    - name: Build
+      run: msbuild -target:"Build" -property:"DeployExtension=False" -Restore:False "Vsix.sln"
+    - name: Test
+      run: vstest.console "src\Alad.CodeAnalyzer.Test\bin\Debug\net6\Alad.CodeAnalyzer.Test.dll"
     - name: Build release
       run: msbuild -target:"Build" -property:"Configuration=Release" -property:"DeployExtension=False" -Restore:False "Vsix.sln"
     - name: Upload VSIX artifact
