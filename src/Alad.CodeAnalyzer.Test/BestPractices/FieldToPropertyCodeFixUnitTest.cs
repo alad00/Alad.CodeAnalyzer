@@ -43,6 +43,17 @@ class MyClass {
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsWhenFieldIsConstant()
+    {
+        var test = @"
+class MyClass {
+    public const int Constant = 123;
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task CodeFixConvertPublicFieldToProperty()
     {
         var test = @"
@@ -73,6 +84,23 @@ class MyClass {
 }";
 
         var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.BestPractices.PublicField).WithLocation(0).WithArguments("Field", "protected");
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+    }
+
+    [TestMethod]
+    public async Task CodeFixConvertFieldWithValueToProperty()
+    {
+        var test = @"
+class MyClass {
+    public int {|#0:Field|} = 123;
+}";
+
+        var fixtest = @"
+class MyClass {
+    public int Field { get; set; } = 123;
+}";
+
+        var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.BestPractices.PublicField).WithLocation(0).WithArguments("Field", "public");
         await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
 }

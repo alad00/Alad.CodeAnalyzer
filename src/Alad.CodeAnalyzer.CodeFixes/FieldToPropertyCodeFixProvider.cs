@@ -13,7 +13,6 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Alad.CodeAnalyzer
 {
@@ -57,12 +56,15 @@ namespace Alad.CodeAnalyzer
                 fieldDeclaration.AttributeLists,
                 fieldDeclaration.Modifiers,
                 fieldDeclaration.Declaration.Type,
-                null, // TODO: explicitInterfaceSpecifier
+                null,
                 variableDeclarator.Identifier,
                 SyntaxFactory.AccessorList(SyntaxFactory.List(new[] {
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(fieldDeclaration.SemicolonToken),
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(fieldDeclaration.SemicolonToken)
-                }))
+                })),
+                null,
+                variableDeclarator.Initializer,
+                variableDeclarator.Initializer == null ? default : fieldDeclaration.SemicolonToken
             );
 
             var newRoot = root.ReplaceNode(fieldDeclaration, propertyDeclaration);

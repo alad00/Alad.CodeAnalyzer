@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+using Alad.CodeAnalyzer.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
@@ -36,32 +37,17 @@ namespace Alad.CodeAnalyzer.BestPractices
         {
             var field = (IFieldSymbol)context.Symbol;
 
+            // se è `const` lasciamo passare
+            if (field.IsConst)
+                return;
+
             // se non è `public` o `protected` lasciamo passare
             if (!field.DeclaredAccessibility.HasFlag(Accessibility.Public) && !field.DeclaredAccessibility.HasFlag(Accessibility.Protected))
                 return;
 
             var location = field.Locations[0];
-            var diagnostic = Diagnostic.Create(Rule, location, field.Name, AccessibilityToCSharp(field.DeclaredAccessibility));
+            var diagnostic = Diagnostic.Create(Rule, location, field.Name, field.DeclaredAccessibility.GetCSharpName());
             context.ReportDiagnostic(diagnostic);
-        }
-
-        static string AccessibilityToCSharp(Accessibility accessibility)
-        {
-            if (accessibility.HasFlag(Accessibility.Public))
-                return "public";
-
-            string s = null;
-
-            if (accessibility.HasFlag(Accessibility.Protected))
-                s = (s == null ? "" : $"{s} ") + "protected";
-
-            if (accessibility.HasFlag(Accessibility.Internal))
-                s = (s == null ? "" : $"{s} ") + "internal";
-
-            if (s == null)
-                return "private";
-
-            return s;
         }
     }
 }
