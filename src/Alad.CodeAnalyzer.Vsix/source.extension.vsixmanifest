@@ -9,6 +9,7 @@ SPDX-License-Identifier: MIT
     <Identity Id="Alad.CodeAnalyzer.73039209-1180-45e0-be2f-6c4f2f507ecb" Version="1.0" Language="en-US" Publisher="ALAD.cloud"/>
     <DisplayName>Alad.CodeAnalyzer</DisplayName>
     <Description xml:space="preserve">Analyzer di Alad per .NET Compiler Platform ("Roslyn").</Description>
+    <License>LICENSE</License>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)">

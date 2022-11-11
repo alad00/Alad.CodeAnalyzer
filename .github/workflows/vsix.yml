@@ -1,0 +1,72 @@
+# SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+#
+# SPDX-License-Identifier: MIT
+
+name: Visual Studio Extension
+on:
+  push:
+    branches: [ release ]
+jobs:
+  build_vsix_and_feed:
+    runs-on: windows-2022
+    permissions:
+      contents: read
+      #packages: read
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+    #- name: Authenticate to NuGet
+    #  run: dotnet nuget update source "alad" --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --configfile NuGet.Config
+    - name: Disable custom NuGet feed # NuGet does not work on "windows-2022"
+      run: del NuGet.Config
+    - name: Restore dependencies
+      run: msbuild -target:"Restore" "Vsix.sln"
+    - name: Build release
+      run: msbuild -target:"Build" -property:"Configuration=Release" -property:"DeployExtension=False" -Restore:False "Vsix.sln"
+    - name: Upload VSIX artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: vsix
+        path: "src/Alad.CodeAnalyzer.Vsix/bin/Release/*.vsix"
+    - name: Install VSIX Tools
+      # NOTA: in teoria si dovrebbe poter fare con il comando seguente, ma non funziona.
+      #run: dotnet tool install --global Microsoft.VSSDK.BuildTools --version 17.4.2118
+      run: |
+        curl -L https://www.nuget.org/api/v2/package/Microsoft.VSSDK.BuildTools/17.4.2118 -o a.zip
+        powershell Expand-Archive a.zip
+    - name: Build feed
+      #run: vsixutil createVsixFeed -fileName "feed" -source "src\Alad.CodeAnalyzer.Vsix\bin\Release"
+      run: a\tools\vssdk\bin\VsixUtil.exe createVsixFeed -fileName "feed" -source "src\Alad.CodeAnalyzer.Vsix\bin\Release"
+    - name: Upload feed artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: feed
+        path: "feed.xml"
+  deploy:
+    needs: [build_vsix_and_feed]
+    runs-on: ubuntu-20.04
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Download VSIX artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: vsix
+        path: "_site/"
+    - name: Download feed artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: feed
+        path: "_site/"
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: "_site/"
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
