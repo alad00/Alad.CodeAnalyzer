@@ -41,12 +41,19 @@ progetto. Il contenuto del file è il seguente.
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
     <add key="alad" value="https://nuget.pkg.github.com/alad00/index.json" protocolVersion="3" />
   </packageSources>
-  <packageSource key="alad">
-    <package pattern="Alad.*" />
-  </packageSource>
+  <packageSourceMapping>
+    <packageSource key="nuget.org">
+      <package pattern="*" />
+    </packageSource>
+    <packageSource key="alad">
+      <package pattern="Alad.*" />
+    </packageSource>
+  </packageSourceMapping>
 </configuration>
+
 ```
 
 Aprire Visual Studio, fare click destro sulla soluzione, e selezionare
