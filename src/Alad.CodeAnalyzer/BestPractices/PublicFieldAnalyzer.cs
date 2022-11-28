@@ -19,7 +19,7 @@ namespace Alad.CodeAnalyzer.BestPractices
             category: nameof(AladDiagnosticCodes.BestPractices),
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/tree/master/docs/codes/{AladDiagnosticCodes.BestPractices.PublicField}.md");
+            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.BestPractices.PublicField}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Rule

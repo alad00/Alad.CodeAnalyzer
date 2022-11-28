@@ -23,7 +23,7 @@ namespace Alad.CodeAnalyzer.Visibility
             category: nameof(AladDiagnosticCodes.Security),
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/tree/master/docs/codes/{AladDiagnosticCodes.Visibility.InternalApiUsage}.md");
+            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Visibility.InternalApiUsage}.md");
 
         static readonly string NamespaceSeparator = ".";
         static readonly char[] NamespaceSeparators = new[] { '.' };
