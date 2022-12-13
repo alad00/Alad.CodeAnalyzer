@@ -13,5 +13,8 @@ namespace Alad.CodeAnalyzer
 
         /// <summary>Converti field in property.</summary>
         public const string FieldToProperty = "ALAD_FIELD_TO_PROPERTY";
+
+        /// <summary>Converti nome field in formato '_camelCase'.</summary>
+        public const string RenameUnderscoreCamelCase = "ALAD_RENAME_UNDERSCORE_CAMEL_CASE";
     }
 }

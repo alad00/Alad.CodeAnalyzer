@@ -6,7 +6,7 @@
 
 namespace Alad.CodeAnalyzer.Internal
 {
-    public class WellKnownTypeNames
+    public static class WellKnownTypeNames
     {
         // https://github.com/dotnet/roslyn-analyzers/blob/a9c5683ad67c8a1b06b3f804c409032641498cca/src/Utilities/Compiler/WellKnownTypeNames.cs
 
