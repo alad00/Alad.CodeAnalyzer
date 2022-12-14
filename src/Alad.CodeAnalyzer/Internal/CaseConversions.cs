@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Alad.CodeAnalyzer.Internal
@@ -6,9 +10,19 @@ namespace Alad.CodeAnalyzer.Internal
     public static class CaseConversions
     {
         /// <summary>
-        /// Accetta stringhe in formato <c>"camelCase"</c>, <c>"_underscoreCamelCase"</c>,
-        /// <c>"PascalCase"</c>, <c>"_UnderscorePascalCase"</c>,
-        /// <c>"SNAKE_CASE"</c>, <c>"_UNDERSCORE_SNAKE_CASE"</c> e le converte in token (un token per parola).
+        /// Accetta stringhe nei formati usati comunemente in C# e le converte in token (un token per parola):
+        /// <para>
+        /// Eventuali prefissi tipo <c>"s_"</c>, <c>"t_"</c> ed <c>"m_"</c> vengono rimossi.
+        /// </para>
+        /// <para>
+        /// Formati accettati:<br/>
+        /// <c>"camelCase"</c>,<br/>
+        /// <c>"_underscoreCamelCase"</c>,<br/>
+        /// <c>"s_staticFieldCase"</c>,<br/>
+        /// <c>"t_threadStaticFieldCase"</c>,<br/>
+        /// <c>"PascalCase"</c>,<br/>
+        /// <c>"SNAKE_CASE"</c>.
+        /// </para>
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -16,10 +30,13 @@ namespace Alad.CodeAnalyzer.Internal
         {
             bool anyLower = str.Any(char.IsLower);
 
-            int tokenStartIndex = 0;
+            // rileva se inizia con un prefisso "s_", "t_", "m_", ecc...
+            bool startsWithPrefix = str.Length > 1 && str[1] == '_' && char.IsLower(str[0]);
+
+            int tokenStartIndex = (startsWithPrefix ? 2 : 0);
             bool previousLower = false;
             bool previousUpper = false;
-            for (var i = 0; i < str.Length; i++)
+            for (var i = tokenStartIndex; i < str.Length; i++)
             {
                 var chr = str[i];
 
@@ -80,17 +97,23 @@ namespace Alad.CodeAnalyzer.Internal
         public static string ToUnderscoreCamelCase(string str)
             => "_" + ToCamelCase(str);
 
+        public static string ToStaticFieldCase(IEnumerable<string> tokens)
+            => "s_" + ToCamelCase(tokens);
+
+        public static string ToStaticFieldCase(string str)
+            => "s_" + ToCamelCase(str);
+
+        public static string ToThreadStaticFieldCase(IEnumerable<string> tokens)
+            => "t_" + ToCamelCase(tokens);
+
+        public static string ToThreadStaticFieldCase(string str)
+            => "t_" + ToCamelCase(str);
+
         public static string ToPascalCase(IEnumerable<string> tokens)
             => string.Join("", tokens.Select(t => t.Length < 3 ? t : t.ToLower()).Select(Capitalize));
 
         public static string ToPascalCase(string str)
             => ToPascalCase(Tokenize(str));
-
-        public static string ToUnderscorePascalCase(IEnumerable<string> tokens)
-            => "_" + ToPascalCase(tokens);
-
-        public static string ToUnderscorePascalCase(string str)
-            => "_" + ToPascalCase(str);
 
         public static string ToSnakeCase(IEnumerable<string> tokens)
             => string.Join("_", tokens.Select(t => t.ToUpperInvariant()));
@@ -98,29 +121,23 @@ namespace Alad.CodeAnalyzer.Internal
         public static string ToSnakeCase(string str)
             => ToSnakeCase(Tokenize(str));
 
-        public static string ToUnderscoreSnakeCase(IEnumerable<string> tokens)
-            => "_" + ToSnakeCase(tokens);
-
-        public static string ToUnderscoreSnakeCase(string str)
-            => "_" + ToSnakeCase(str);
-
         public static bool IsCamelCase(string str)
             => str == ToCamelCase(str);
 
         public static bool IsUnderscoreCamelCase(string str)
-            => str.Length > 0 && str[0] == '_' && IsCamelCase(str.Substring(1));
+            => str.StartsWith("_") && IsCamelCase(str.Substring(1));
+
+        public static bool IsStaticFieldCase(string str)
+            => str.StartsWith("s_") && IsCamelCase(str.Substring(2));
+
+        public static bool IsThreadStaticFieldCase(string str)
+            => str.StartsWith("t_") && IsCamelCase(str.Substring(2));
 
         public static bool IsPascalCase(string str)
             => str == ToPascalCase(str);
 
-        public static bool IsUnderscorePascalCase(string str)
-            => str.Length > 0 && str[0] == '_' && IsPascalCase(str.Substring(1));
-
         public static bool IsSnakeCase(string str)
             => str == ToSnakeCase(str);
-
-        public static bool IsUnderscoreSnakeCase(string str)
-            => str.Length > 0 && str[0] == '_' && IsSnakeCase(str.Substring(1));
 
         public static string Capitalize(string str)
             => (str.Length == 0 || char.IsUpper(str[0])) ? str : (char.ToUpperInvariant(str[0]) + str.Substring(1));

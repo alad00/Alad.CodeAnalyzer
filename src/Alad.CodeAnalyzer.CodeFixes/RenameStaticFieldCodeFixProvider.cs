@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace Alad.CodeAnalyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RenameToUnderscoreCamelCaseCodeFixProvider)), Shared]
-    public class RenameToUnderscoreCamelCaseCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RenameStaticFieldCodeFixProvider)), Shared]
+    public class RenameStaticFieldCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            AladDiagnosticCodes.NamingConventions.PrivateFieldName
+            AladDiagnosticCodes.NamingConventions.PrivateStaticFieldName
         );
 
         public sealed override FixAllProvider GetFixAllProvider()
@@ -39,7 +39,7 @@ namespace Alad.CodeAnalyzer
 
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Converti nome field in formato '_camelCase'",
+                    title: "Converti nome field statico in formato 's_camelCase' o 't_camelCase'",
                     createChangedSolution: c => Rename(context.Document, declaration, c),
                     equivalenceKey: AladEquivalenceKeys.RenameUnderscoreCamelCase),
                 diagnostic);
@@ -47,15 +47,24 @@ namespace Alad.CodeAnalyzer
 
         async Task<Solution> Rename(Document document, SyntaxNode declaration, CancellationToken cancellationToken)
         {
+            var compilation = await document.Project.GetCompilationAsync(cancellationToken);
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
             var symbol = semanticModel.GetDeclaredSymbol(declaration);
+
+            var isThreadStatic = false;
+
+            var wellKnownTypeProvider = new WellKnownTypeProvider(compilation);
+            if (wellKnownTypeProvider.TryGetOrCreateTypeByMetadataName(WellKnownTypeNames.SystemThreadStaticAttribute, out var threadStaticAttributeType))
+            {
+                isThreadStatic = symbol.GetAttributes().Any(a => a.AttributeClass.Equals(threadStaticAttributeType, SymbolEqualityComparer.Default));
+            }
 
             var solution = await Renamer.RenameSymbolAsync(
                 document.Project.Solution,
                 symbol,
                 default,
-                CaseConversions.ToUnderscoreCamelCase(symbol.Name));
+                isThreadStatic ? CaseConversions.ToThreadStaticFieldCase(symbol.Name) : CaseConversions.ToStaticFieldCase(symbol.Name));
 
             return solution;
         }

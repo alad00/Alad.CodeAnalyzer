@@ -13,5 +13,7 @@ namespace Alad.CodeAnalyzer.Internal
         public const string MicrosoftExtensionsLoggingILogger = "Microsoft.Extensions.Logging.ILogger";
         public const string MicrosoftExtensionsLoggingLoggerExtensions = "Microsoft.Extensions.Logging.LoggerExtensions";
         public const string MicrosoftExtensionsLoggingLoggerMessage = "Microsoft.Extensions.Logging.LoggerMessage";
+
+        public const string SystemThreadStaticAttribute = "System.ThreadStaticAttribute";
     }
 }
