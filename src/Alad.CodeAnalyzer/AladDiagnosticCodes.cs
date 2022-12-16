@@ -89,7 +89,7 @@ namespace Alad.CodeAnalyzer
             public const string PrivateStaticFieldName = "ALAD1004";
 
             /// <summary>Nome parametro non rispetta le convenzioni.</summary>
-            public const string ArgumentName = "ALAD1005";
+            public const string ParameterName = "ALAD1005";
 
             /// <summary>Nome namespace non rispetta le convenzioni.</summary>
             public const string NamespaceName = "ALAD1006";
