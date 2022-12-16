@@ -16,5 +16,8 @@ namespace Alad.CodeAnalyzer
 
         /// <summary>Converti nome field in formato '_camelCase'.</summary>
         public const string RenameUnderscoreCamelCase = "ALAD_RENAME_UNDERSCORE_CAMEL_CASE";
+
+        /// <summary>Converti nome field in formato 'PascalCase'.</summary>
+        public const string RenamePascalCase = "ALAD_RENAME_PASCAL_CASE";
     }
 }
