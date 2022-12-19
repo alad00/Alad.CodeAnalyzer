@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
 //
 // SPDX-License-Identifier: MIT
 
@@ -20,6 +20,7 @@ namespace Alad.CodeAnalyzer
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             AladDiagnosticCodes.NamingConventions.PublicFieldName,
+            AladDiagnosticCodes.NamingConventions.NamespaceName,
             AladDiagnosticCodes.NamingConventions.ConstName
         );
 
@@ -50,7 +51,7 @@ namespace Alad.CodeAnalyzer
         {
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
-            var symbol = semanticModel.GetDeclaredSymbol(declaration);
+            var symbol = semanticModel.GetDeclaredSymbol(declaration) ?? semanticModel.GetSymbolInfo(declaration).Symbol;
 
             var solution = await Renamer.RenameSymbolAsync(
                 document.Project.Solution,
