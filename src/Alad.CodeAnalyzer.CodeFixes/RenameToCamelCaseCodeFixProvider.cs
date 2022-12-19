@@ -39,7 +39,7 @@ namespace Alad.CodeAnalyzer
 
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Converti nome parametro in formato 'camelCase'",
+                    title: "Converti in formato 'camelCase'",
                     createChangedSolution: c => Rename(context.Document, declaration, c),
                     equivalenceKey: AladEquivalenceKeys.RenameCamelCase),
                 diagnostic);

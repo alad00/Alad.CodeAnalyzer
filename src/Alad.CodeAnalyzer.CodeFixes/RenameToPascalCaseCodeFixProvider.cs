@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
+﻿// SPDX-FileCopyrightText: 2022 ALAD SRL <info@alad.cloud>
 //
 // SPDX-License-Identifier: MIT
 
@@ -41,7 +41,7 @@ namespace Alad.CodeAnalyzer
 
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Converti nome field in formato 'PascalCase'",
+                    title: "Converti in formato 'PascalCase'",
                     createChangedSolution: c => Rename(context.Document, declaration, c),
                     equivalenceKey: AladEquivalenceKeys.RenamePascalCase),
                 diagnostic);

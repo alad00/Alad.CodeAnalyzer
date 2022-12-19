@@ -39,7 +39,7 @@ namespace Alad.CodeAnalyzer
 
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Converti nome field statico in formato 's_camelCase' o 't_camelCase'",
+                    title: "Converti in formato 's_camelCase' o 't_camelCase'",
                     createChangedSolution: c => Rename(context.Document, declaration, c),
                     equivalenceKey: AladEquivalenceKeys.RenameUnderscoreCamelCase),
                 diagnostic);
