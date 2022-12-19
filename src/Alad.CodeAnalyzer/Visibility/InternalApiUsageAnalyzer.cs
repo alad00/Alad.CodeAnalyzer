@@ -16,7 +16,7 @@ namespace Alad.CodeAnalyzer.Visibility
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class InternalApiUsageAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Visibility.InternalApiUsage,
             title: "Non fare uso di API destinate a consumo interno",
             messageFormat: "Utilizzo di {0} destinato ad uso interno",
@@ -25,12 +25,12 @@ namespace Alad.CodeAnalyzer.Visibility
             isEnabledByDefault: true,
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Visibility.InternalApiUsage}.md");
 
-        static readonly string NamespaceSeparator = ".";
-        static readonly char[] NamespaceSeparators = new[] { '.' };
-        static readonly Regex InternalNamespace = new Regex(@"\.Internal(?:\.|$)", RegexOptions.Compiled);
+        static readonly string s_namespaceSeparator = ".";
+        static readonly char[] s_namespaceSeparators = new[] { '.' };
+        static readonly Regex s_internalNamespace = new Regex(@"\.Internal(?:\.|$)", RegexOptions.Compiled);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -74,12 +74,12 @@ namespace Alad.CodeAnalyzer.Visibility
             // Nota: prendiamo solo i primi due componenti del namespace, supponendo che il primo sia l'autore ed il secondo il progetto, esempio: "MyCompany.MyProject.Models"
             var namespaceString = operation.Type.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
             var containingNamespace = currentClass.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
-            if (containingNamespace.Split(NamespaceSeparators, 3).Take(2).SequenceEqual(namespaceString.Split(NamespaceSeparators, 3).Take(2)))
+            if (containingNamespace.Split(s_namespaceSeparators, 3).Take(2).SequenceEqual(namespaceString.Split(s_namespaceSeparators, 3).Take(2)))
                 return;
 
             var location = operation.Syntax.GetLocation();
-            var fullName = string.Join(NamespaceSeparator, new[] { namespaceString, operation.Type.Name }.Where(x => !string.IsNullOrEmpty(x)));
-            var diagnostic = Diagnostic.Create(Rule, location, fullName);
+            var fullName = string.Join(s_namespaceSeparator, new[] { namespaceString, operation.Type.Name }.Where(x => !string.IsNullOrEmpty(x)));
+            var diagnostic = Diagnostic.Create(s_rule, location, fullName);
             context.ReportDiagnostic(diagnostic);
         }
 

@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-using Alad.CodeAnalyzer.Test.Logging.Internal;
 using Alad.CodeAnalyzer.Test.NamingConventions.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VerifyCS = Alad.CodeAnalyzer.Test.CSharpCodeFixVerifier<

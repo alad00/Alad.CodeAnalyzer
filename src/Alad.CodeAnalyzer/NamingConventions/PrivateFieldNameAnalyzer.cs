@@ -12,7 +12,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class PrivateFieldNameAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.NamingConventions.PrivateFieldName,
             title: "Il nome dei field internal o private deve essere in formato '_camelCase'",
             messageFormat: "Rinominare il field '{0}' per rispettare le convenzioni",
@@ -22,7 +22,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.NamingConventions.PrivateFieldName}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -50,7 +50,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
                 return;
 
             var location = field.Locations[0];
-            var diagnostic = Diagnostic.Create(Rule, location, field.Name);
+            var diagnostic = Diagnostic.Create(s_rule, location, field.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

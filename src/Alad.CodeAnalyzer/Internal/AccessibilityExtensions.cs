@@ -16,7 +16,7 @@ namespace Alad.CodeAnalyzer.Internal
             string s = null;
 
             if (accessibility.HasFlag(Accessibility.Protected))
-                s = (s == null ? "" : $"{s} ") + "protected";
+                s = "protected";
 
             if (accessibility.HasFlag(Accessibility.Internal))
                 s = (s == null ? "" : $"{s} ") + "internal";

@@ -13,7 +13,7 @@ namespace Alad.CodeAnalyzer.Logging
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class DecorativeLogAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Logging.DecorativeLog,
             title: "Non è necessario aggiungere elementi ornamentali ai log",
             messageFormat: "Rimuovere elementi ornamentali dal log",
@@ -23,7 +23,7 @@ namespace Alad.CodeAnalyzer.Logging
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Logging.DecorativeLog}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -53,7 +53,7 @@ namespace Alad.CodeAnalyzer.Logging
             if (str.Length == 0 || IsDecorative(str[0]) || IsDecorative(str[str.Length - 1], true))
             {
                 var location = message.Syntax.GetLocation();
-                var diagnostic = Diagnostic.Create(Rule, location);
+                var diagnostic = Diagnostic.Create(s_rule, location);
                 context.ReportDiagnostic(diagnostic);
             }
         }

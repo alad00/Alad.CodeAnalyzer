@@ -12,7 +12,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ConstNameAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.NamingConventions.ConstName,
             title: "Il nome delle costanti deve essere in formato 'PascalCase'",
             messageFormat: "Rinominare la costante '{0}' per rispettare le convenzioni",
@@ -22,7 +22,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.NamingConventions.ConstName}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -46,7 +46,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
                 return;
 
             var location = field.Locations[0];
-            var diagnostic = Diagnostic.Create(Rule, location, field.Name);
+            var diagnostic = Diagnostic.Create(s_rule, location, field.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

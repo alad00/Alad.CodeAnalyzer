@@ -15,7 +15,7 @@ namespace Alad.CodeAnalyzer.Logging
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class FragmentedLogAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Logging.FragmentedLog,
             title: "Il log di un singolo evento non dovrebbe essere suddiviso su più righe",
             messageFormat: "Log di un singolo evento suddiviso su più righe",
@@ -25,7 +25,7 @@ namespace Alad.CodeAnalyzer.Logging
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Logging.FragmentedLog}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -65,7 +65,7 @@ namespace Alad.CodeAnalyzer.Logging
                 return;
 
             var location = nextInvocation.Syntax.GetLocation();
-            var diagnostic = Diagnostic.Create(Rule, location);
+            var diagnostic = Diagnostic.Create(s_rule, location);
             context.ReportDiagnostic(diagnostic);
         }
     }

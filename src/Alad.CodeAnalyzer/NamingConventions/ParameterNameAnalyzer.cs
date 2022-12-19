@@ -13,7 +13,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ParameterNameAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.NamingConventions.ParameterName,
             title: "Il nome dei parametri deve essere in formato 'camelCase'",
             messageFormat: "Rinominare il parametro '{0}' per rispettare le convenzioni",
@@ -23,7 +23,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.NamingConventions.ParameterName}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -47,7 +47,7 @@ namespace Alad.CodeAnalyzer.NamingConventions
                 return;
 
             var location = parameter.Locations[0];
-            var diagnostic = Diagnostic.Create(Rule, location, parameter.Name);
+            var diagnostic = Diagnostic.Create(s_rule, location, parameter.Name);
             context.ReportDiagnostic(diagnostic);
         }
 

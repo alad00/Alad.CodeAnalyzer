@@ -15,7 +15,7 @@ namespace Alad.CodeAnalyzer.Security
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class AllExceptionsCaughtAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Security.AllExceptionsCaught,
             title: "Intercettare solo le eccezioni note, lasciare che le altre vengano intercettate e gestite esternamente",
             messageFormat: "Catch incondizionato di {0}",
@@ -25,7 +25,7 @@ namespace Alad.CodeAnalyzer.Security
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Security.AllExceptionsCaught}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -60,7 +60,7 @@ namespace Alad.CodeAnalyzer.Security
                 return;
 
             var location = syntax.CatchKeyword.GetLocation();
-            var diagnostic = Diagnostic.Create(Rule, location, operation.ExceptionType.Name);
+            var diagnostic = Diagnostic.Create(s_rule, location, operation.ExceptionType.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

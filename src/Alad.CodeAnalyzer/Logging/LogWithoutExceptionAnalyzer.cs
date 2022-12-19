@@ -15,7 +15,7 @@ namespace Alad.CodeAnalyzer.Logging
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class LogWithoutExceptionAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Logging.LogWithoutException,
             title: "Le eccezioni dovrebbero essere loggate",
             messageFormat: "Passare l'eccezione come primo parametro del metodo '{0}'",
@@ -25,7 +25,7 @@ namespace Alad.CodeAnalyzer.Logging
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Logging.LogWithoutException}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -53,7 +53,7 @@ namespace Alad.CodeAnalyzer.Logging
                 return;
 
             var location = invocation.Syntax.GetLocation();
-            var diagnostic = Diagnostic.Create(Rule, location, invocation.TargetMethod.Name);
+            var diagnostic = Diagnostic.Create(s_rule, location, invocation.TargetMethod.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

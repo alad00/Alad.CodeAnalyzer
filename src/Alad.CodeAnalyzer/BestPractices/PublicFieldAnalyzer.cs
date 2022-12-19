@@ -12,7 +12,7 @@ namespace Alad.CodeAnalyzer.BestPractices
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class PublicFieldAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.BestPractices.PublicField,
             title: "I field non dovrebbero mai essere public o protected",
             messageFormat: "Field '{0}' con modificatore di visibilità '{1}'",
@@ -22,7 +22,7 @@ namespace Alad.CodeAnalyzer.BestPractices
             helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.BestPractices.PublicField}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            Rule
+            s_rule
         );
 
         public override void Initialize(AnalysisContext context)
@@ -46,7 +46,7 @@ namespace Alad.CodeAnalyzer.BestPractices
                 return;
 
             var location = field.Locations[0];
-            var diagnostic = Diagnostic.Create(Rule, location, field.Name, field.DeclaredAccessibility.GetCSharpName());
+            var diagnostic = Diagnostic.Create(s_rule, location, field.Name, field.DeclaredAccessibility.GetCSharpName());
             context.ReportDiagnostic(diagnostic);
         }
     }
