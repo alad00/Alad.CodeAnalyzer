@@ -19,6 +19,7 @@ namespace Alad.CodeAnalyzer
     public class RenameToPascalCaseCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
+            AladDiagnosticCodes.NamingConventions.PublicFieldName,
             AladDiagnosticCodes.NamingConventions.ConstName
         );
 

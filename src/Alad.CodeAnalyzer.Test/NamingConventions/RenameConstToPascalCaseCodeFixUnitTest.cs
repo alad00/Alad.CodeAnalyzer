@@ -10,7 +10,7 @@ using VerifyCS = Alad.CodeAnalyzer.Test.CSharpCodeFixVerifier<
 namespace Alad.CodeAnalyzer.Test.NamingConventions;
 
 [TestClass]
-public class RenameToPascalCaseCodeFixUnitTest
+public class RenameConstToPascalCaseCodeFixUnitTest
 {
     [TestMethod]
     public async Task NoDiagnosticsExpected()
