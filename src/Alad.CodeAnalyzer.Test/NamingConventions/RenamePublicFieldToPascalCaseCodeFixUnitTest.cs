@@ -34,6 +34,18 @@ class _myClass {
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsOnOperators()
+    {
+        var test = @"
+class MyClass {
+    public static implicit operator int(MyClass obj) => 123;
+}
+";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task CodeFixRenamePublicFieldToPascalCase()
     {
         var test = @"

@@ -41,8 +41,8 @@ namespace Alad.CodeAnalyzer.NamingConventions
             if (symbol.IsImplicitlyDeclared)
                 return;
 
-            // se è un getter o setter lasciamo passare
-            if (symbol is IMethodSymbol m && (m.MethodKind == MethodKind.PropertyGet || m.MethodKind == MethodKind.PropertySet))
+            // se è un metodo, lo lasciamo passare solo se è ordinario o local function (esclusi quindi getter e setter, costruttori, operatori, ecc...)
+            if (symbol is IMethodSymbol m && m.MethodKind != MethodKind.Ordinary && m.MethodKind != MethodKind.LocalFunction)
                 return;
 
             // se non è `public` o `protected` lasciamo passare
