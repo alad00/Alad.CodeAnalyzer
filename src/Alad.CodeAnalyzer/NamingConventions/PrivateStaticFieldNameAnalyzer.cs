@@ -52,6 +52,10 @@ namespace Alad.CodeAnalyzer.NamingConventions
             if (!field.IsStatic)
                 return;
 
+            // se è una costante lasciamo passare (le costanti sono sempre statiche)
+            if (field.IsConst)
+                return;
+
             // se è `public` o `protected` lasciamo passare
             if (field.DeclaredAccessibility.HasFlag(Accessibility.Public) || field.DeclaredAccessibility.HasFlag(Accessibility.Protected))
                 return;

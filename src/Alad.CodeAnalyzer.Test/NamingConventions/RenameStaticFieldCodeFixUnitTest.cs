@@ -43,6 +43,17 @@ class MyClass {
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsOnConstants()
+    {
+        var test = @"
+class MyClass {
+    const int MyConstant = 123;
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task CodeFixRenameFieldToStaticFieldCase()
     {
         var test = @"
