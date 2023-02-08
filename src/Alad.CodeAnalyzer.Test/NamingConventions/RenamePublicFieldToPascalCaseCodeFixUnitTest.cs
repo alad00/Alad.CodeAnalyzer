@@ -34,6 +34,18 @@ class _myClass {
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsOnIndexer()
+    {
+        var test = @"
+class MyClass {
+    public int this[int i] => 123;
+}
+";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task NoDiagnosticsOnOperators()
     {
         var test = @"

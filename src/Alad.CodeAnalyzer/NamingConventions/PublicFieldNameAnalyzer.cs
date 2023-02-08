@@ -45,6 +45,10 @@ namespace Alad.CodeAnalyzer.NamingConventions
             if (symbol is IMethodSymbol m && m.MethodKind != MethodKind.Ordinary && m.MethodKind != MethodKind.LocalFunction)
                 return;
 
+            // se è un indexer, non lo lasciamo passare
+            if (symbol is IPropertySymbol p && p.IsIndexer)
+                return;
+
             // se non è `public` o `protected` lasciamo passare
             if (!symbol.DeclaredAccessibility.HasFlag(Accessibility.Public) && !symbol.DeclaredAccessibility.HasFlag(Accessibility.Protected))
                 return;
