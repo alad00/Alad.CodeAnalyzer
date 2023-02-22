@@ -29,6 +29,22 @@ class MyClass {
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsExpectedOnBrackets()
+    {
+        var test = @"
+using Microsoft.Extensions.Logging;
+
+class MyClass {
+    MyClass(ILogger logger) {
+        logger.LogInformation(""{Count} values added."", 3);
+    }
+}
+";
+
+        await VerifyCS.VerifyAnalyzerAsync(test + LoggingStubs.Code);
+    }
+
+    [TestMethod]
     public async Task DoNotAllowDecorativeLogs()
     {
         var test = @"

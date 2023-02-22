@@ -50,7 +50,7 @@ namespace Alad.CodeAnalyzer.Logging
                 return;
 
             // segnalazione se il message è vuoto oppure se inizia o finisce con un carattere ornamentale (simboli o spazi)
-            if (str.Length == 0 || IsDecorative(str[0]) || IsDecorative(str[str.Length - 1], true))
+            if (str.Length == 0 || IsDecorativeStart(str[0]) || IsDecorativeEnd(str[str.Length - 1]))
             {
                 var location = message.Syntax.GetLocation();
                 var diagnostic = Diagnostic.Create(s_rule, location);
@@ -58,17 +58,37 @@ namespace Alad.CodeAnalyzer.Logging
             }
         }
 
-        static bool IsDecorative(char chr, bool allowPunctuation = false)
+        static bool IsDecorativeStart(char chr)
         {
+            // eventuali spazi iniziali sono sicuramente ornamentali (gli spazi possono essere rimossi)
             if (char.IsWhiteSpace(chr))
                 return true;
 
+            // eventuali simboli sono probabilmente ornamentali
             if (char.IsSymbol(chr))
                 return true;
 
-            if (!allowPunctuation && char.IsPunctuation(chr))
+            // eventuali caratteri di punteggiatura ad inizio stringa sono probabilmente ornamentali,
+            // a meno che non sia '{' di string-format
+            if (char.IsPunctuation(chr) && chr != '{')
                 return true;
 
+            // tutti gli altri caratteri sono consentiti
+            return false;
+        }
+
+        static bool IsDecorativeEnd(char chr)
+        {
+            // eventuali spazi iniziali sono sicuramente ornamentali (gli spazi possono essere rimossi)
+            if (char.IsWhiteSpace(chr))
+                return true;
+
+            // eventuali simboli sono probabilmente ornamentali
+            if (char.IsSymbol(chr))
+                return true;
+
+            // tutti gli altri caratteri sono consentiti,
+            // a fine stringa anche i caratteri di punteggiatura sono consentiti
             return false;
         }
     }
