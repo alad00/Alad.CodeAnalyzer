@@ -46,6 +46,11 @@ namespace Alad.CodeAnalyzer.NamingConventions
             if (IsRecordConstructorParameter(parameter))
                 return;
 
+            // se è un override ed il metodo sottostante ha un parametro con lo stesso nome, lasciamo passare
+            // idem se è l'implementazione del metodo di un'interfaccia ed ha un parametro con lo stesso nome
+            if (IsMethodOverrideWithParameterWithSameName(parameter))
+                return;
+
             var location = parameter.Locations[0];
             var diagnostic = Diagnostic.Create(s_rule, location, parameter.Name);
             context.ReportDiagnostic(diagnostic);
@@ -69,6 +74,23 @@ namespace Alad.CodeAnalyzer.NamingConventions
                 return false;
 
             return true;
+        }
+
+        static bool IsMethodOverrideWithParameterWithSameName(IParameterSymbol parameter)
+        {
+            var method = (IMethodSymbol)parameter.ContainingSymbol;
+
+            // se è un override ed il metodo sottostante ha un parametro con lo stesso nome, lasciamo passare
+            if (method.IsOverride && method.OverriddenMethod.Parameters.Any(p => p.Name == parameter.Name))
+                return true;
+
+            // idem se è l'implementazione esplicita del metodo di un'interfaccia ed ha un parametro con lo stesso nome 
+            if (method.ExplicitInterfaceImplementations.Any(e => e.Parameters.Any(p => p.Name == parameter.Name)))
+                return true;
+
+            // TODO: idem se è l'implementazione implicita del metodo di un'interfaccia ed ha un parametro con lo stesso nome
+
+            return false;
         }
     }
 }

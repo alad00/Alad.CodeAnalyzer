@@ -4,6 +4,7 @@
 
 using Alad.CodeAnalyzer.Test.NamingConventions.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics.CodeAnalysis;
 using VerifyCS = Alad.CodeAnalyzer.Test.CSharpCodeFixVerifier<
     Alad.CodeAnalyzer.NamingConventions.ParameterNameAnalyzer,
     Alad.CodeAnalyzer.RenameToCamelCaseCodeFixProvider>;
@@ -26,6 +27,55 @@ public class RenameToCamelCaseCodeFixUnitTest
     {
         var test = @"
 record MyRecord(int SomeProperty);";
+
+        await VerifyCS.VerifyAnalyzerAsync(test + RecordStubs.Code);
+    }
+
+    [TestMethod]
+    public async Task NoDiagnosticsWhenOverrideWithSameName()
+    {
+        var test = @"    
+[System.Diagnostics.CodeAnalysis.SuppressMessage(""NamingConventions"", ""ALAD1005"")]
+class MyBaseClass {
+    public virtual void MyMethod(int SomeParameter) { }
+}
+
+class MyClass : MyBaseClass {
+    public override void MyMethod(int SomeParameter) { }
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test + RecordStubs.Code);
+    }
+
+    [Ignore]  // TODO: fix
+    [TestMethod]
+    public async Task NoDiagnosticsWhenImplicitImplementationWithSameName()
+    {
+        var test = @"    
+[System.Diagnostics.CodeAnalysis.SuppressMessage(""NamingConventions"", ""ALAD1005"")]
+interface IMyInterface {
+    void MyMethod(int SomeParameter);
+}
+
+class MyClass : IMyInterface {
+    public void MyMethod(int SomeParameter) { }
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test + RecordStubs.Code);
+    }
+
+    [TestMethod]
+    public async Task NoDiagnosticsWhenExplicitImplementationWithSameName()
+    {
+        var test = @"    
+[System.Diagnostics.CodeAnalysis.SuppressMessage(""NamingConventions"", ""ALAD1005"")]
+interface IMyInterface {
+    void MyMethod(int SomeParameter);
+}
+
+class MyClass : IMyInterface {
+    void IMyInterface.MyMethod(int SomeParameter) { }
+}";
 
         await VerifyCS.VerifyAnalyzerAsync(test + RecordStubs.Code);
     }
