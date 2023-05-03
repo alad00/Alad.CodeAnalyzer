@@ -55,6 +55,23 @@ class MyClass {
     }
 
     [TestMethod]
+    public async Task SupportsImplicitObjectCreations()
+    {
+        var test = @"
+using System;
+
+class MyClass {
+    int Test(int x) {
+        Exception ex = {|#0:new|}(""Test"");
+        throw ex;
+    }
+}";
+
+        var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.Security.GenericException).WithLocation(0).WithArguments("Exception");
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [TestMethod]
     public async Task NoDiagnosticsWhenForwarding()
     {
         var test = @"
