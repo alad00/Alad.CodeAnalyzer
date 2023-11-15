@@ -62,6 +62,22 @@ namespace Alad.CodeAnalyzer
             public const string DecorativeLog = "ALAD0302";
         }
 
+        /// <summary>
+        /// Sincronizzazione.
+        /// </summary>
+        public static class Synchronization
+        {
+            /// <summary>
+            /// Chiamata senza await a metodo che non supporta operazioni in parallelo.
+            /// </summary>
+            public const string ExpectsAwait = "ALAD0400";
+
+            /// <summary>
+            /// Metodo che non supporta operazioni in parallelo.
+            /// </summary>
+            public const string ExpectsAwaitTaint = "ALAD0401";
+        }
+
         #endregion
 
         #region Pulizia del codice (da ALAD1000 ad ALAD1999)
