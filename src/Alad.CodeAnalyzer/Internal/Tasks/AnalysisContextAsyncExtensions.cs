@@ -18,12 +18,14 @@ namespace Alad.CodeAnalyzer.Internal.Tasks
             INamedTypeSymbol valueTask1Type,
             INamedTypeSymbol asyncResultType,
             INamedTypeSymbol awaitExpectedAttributeType,
+            INamedTypeSymbol dbContextType,
             INamedTypeSymbol entityFrameworkQueryableExtensionsType)
         {
             ValueTask = valueTaskType;
             ValueTask1 = valueTask1Type;
             IAsyncResult = asyncResultType;
             ExpectsAwaitAttribute = awaitExpectedAttributeType;
+            DbContext = dbContextType;
             EntityFrameworkQueryableExtensions = entityFrameworkQueryableExtensionsType;
         }
 
@@ -35,6 +37,8 @@ namespace Alad.CodeAnalyzer.Internal.Tasks
 
         public INamedTypeSymbol ExpectsAwaitAttribute { get; }
 
+        public INamedTypeSymbol DbContext { get; }
+
         public INamedTypeSymbol EntityFrameworkQueryableExtensions { get; }
 
         public bool IsAwaitableType(ITypeSymbol type)
@@ -42,7 +46,8 @@ namespace Alad.CodeAnalyzer.Internal.Tasks
             return _isAwaitable.GetValue(type, t =>
             {
                 // se è ValueTask o ValueTask<T> è awaitable
-                if (t.Equals(ValueTask, SymbolEqualityComparer.Default) || t.OriginalDefinition.Equals(ValueTask1, SymbolEqualityComparer.Default))
+                if (t.Equals(ValueTask, SymbolEqualityComparer.Default) ||
+                    t.OriginalDefinition.Equals(ValueTask1, SymbolEqualityComparer.Default))
                     return new StrongBox<bool>(true);
 
                 if (IAsyncResult is null)
@@ -80,7 +85,8 @@ namespace Alad.CodeAnalyzer.Internal.Tasks
         public bool ExpectsAwait(IMethodSymbol method)
         {
             // i metodi di Entity Framework Core devono essere "awaited"
-            if (method.ContainingType.Equals(EntityFrameworkQueryableExtensions, SymbolEqualityComparer.Default))
+            if (method.ContainingType.Equals(EntityFrameworkQueryableExtensions, SymbolEqualityComparer.Default) ||
+                method.ContainingType.ExtendsType(DbContext))
                 return true;
 
             if (ExpectsAwaitAttribute is null)
@@ -104,6 +110,7 @@ namespace Alad.CodeAnalyzer.Internal.Tasks
                 _ = tp.TryGetOrCreateTypeByMetadataName(WellKnownTypeNames.SystemThreadingTasksValueTask1, out var valueTask1);
                 _ = tp.TryGetOrCreateTypeByMetadataName(WellKnownTypeNames.SystemIAsyncResult, out var asyncResult);
                 _ = tp.TryGetOrCreateTypeByMetadataName(WellKnownTypeNames.AladDiagnosticsCodeAnalysisExpectsAwaitAttribute, out var expectsAwaitAttribute);
+                _ = tp.TryGetOrCreateTypeByMetadataName(WellKnownTypeNames.MicrosoftEntityFrameworkCoreDbContext, out var dbContext);
                 _ = tp.TryGetOrCreateTypeByMetadataName(WellKnownTypeNames.MicrosoftEntityFrameworkCoreEntityFrameworkQueryableExtensions, out var entityFrameworkQueryableExtensions);
 
                 return new AsyncTypeSymbols(
@@ -111,6 +118,7 @@ namespace Alad.CodeAnalyzer.Internal.Tasks
                     valueTask1,
                     asyncResult,
                     expectsAwaitAttribute,
+                    dbContext,
                     entityFrameworkQueryableExtensions);
             });
         }

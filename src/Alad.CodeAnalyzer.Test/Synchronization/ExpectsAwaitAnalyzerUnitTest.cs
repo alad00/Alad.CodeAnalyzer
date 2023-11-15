@@ -190,6 +190,43 @@ class MyClass {
     }
 
     [TestMethod]
+    public async Task DoesNotAddUsingTwice()
+    {
+        var test = @"
+using System.Threading.Tasks;
+using Alad.Diagnostics.CodeAnalysis;
+
+class MyClass {
+    async Task Test() {
+        await {|#0:ExampleAsync()|};
+    }
+
+    [ExpectsAwait]
+    async Task ExampleAsync() {
+    }
+}";
+
+        var fixtest = @"
+using System.Threading.Tasks;
+using Alad.Diagnostics.CodeAnalysis;
+
+class MyClass {
+    [ExpectsAwait]
+    async Task Test() {
+        await ExampleAsync();
+    }
+
+    [ExpectsAwait]
+    async Task ExampleAsync() {
+    }
+}";
+
+        var diagnostic = new ExpectsAwaitAnalyzer().SupportedDiagnostics.First(d => d.Id == AladDiagnosticCodes.Synchronization.ExpectsAwaitTaint);
+        var expected = VerifyCS.Diagnostic(diagnostic).WithLocation(0).WithArguments("ExampleAsync");
+        await VerifyCS.VerifyCodeFixAsync(test + SynchronizationStubs.Code, expected, fixtest + SynchronizationStubs.Code);
+    }
+
+    [TestMethod]
     public async Task EntityFrameworkCoreWithoutAwait()
     {
         var test = @"

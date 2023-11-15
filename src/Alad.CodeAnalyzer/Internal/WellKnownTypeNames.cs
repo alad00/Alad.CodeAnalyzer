@@ -12,6 +12,7 @@ namespace Alad.CodeAnalyzer.Internal
 
         public const string AladDiagnosticsCodeAnalysisExpectsAwaitAttribute = "Alad.Diagnostics.CodeAnalysis.ExpectsAwaitAttribute";
 
+        public const string MicrosoftEntityFrameworkCoreDbContext = "Microsoft.EntityFrameworkCore.DbContext";
         public const string MicrosoftEntityFrameworkCoreEntityFrameworkQueryableExtensions = "Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions";
 
         public const string MicrosoftExtensionsLoggingILogger = "Microsoft.Extensions.Logging.ILogger";

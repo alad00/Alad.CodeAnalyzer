@@ -21,7 +21,7 @@ namespace Alad.CodeAnalyzer.Synchronization
             category: nameof(AladDiagnosticCodes.Synchronization),
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Logging.LogWithoutException}.md");
+            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Synchronization.ExpectsAwait}.md");
 
         static readonly DiagnosticDescriptor s_tainted = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Synchronization.ExpectsAwaitTaint,
@@ -30,7 +30,7 @@ namespace Alad.CodeAnalyzer.Synchronization
             category: nameof(AladDiagnosticCodes.Synchronization),
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Logging.LogWithoutException}.md");
+            helpLinkUri: $"https://github.com/alad00/Alad.CodeAnalyzer/blob/main/docs/codes/{AladDiagnosticCodes.Synchronization.ExpectsAwaitTaint}.md");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             s_noAwait,

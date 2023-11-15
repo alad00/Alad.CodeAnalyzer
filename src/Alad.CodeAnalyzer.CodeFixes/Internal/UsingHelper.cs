@@ -22,9 +22,14 @@ namespace Alad.CodeAnalyzer.Internal
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken);
 
+            // se questo "using" è già presente, non applica alcuna modifica
+            var sourceNode = root.FindNode(source);
+            if (GetAllVisibleUsings(sourceNode).Any(u => u.IsRoughlyEquivalentTo(usingDirective)))
+                return document;
+
             var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
 
-            var lastUsingBeforeSource = FindDeepestUsingAt(root, source);
+            var lastUsingBeforeSource = FindDeepestUsingAt(sourceNode);
             if (lastUsingBeforeSource != null)
             {
                 var usings = GetUsings(lastUsingBeforeSource);
@@ -40,19 +45,31 @@ namespace Alad.CodeAnalyzer.Internal
             return editor.GetChangedDocument();
         }
 
-        static UsingDirectiveSyntax FindDeepestUsingAt(SyntaxNode root, TextSpan source)
+        static UsingDirectiveSyntax FindDeepestUsingAt(SyntaxNode sourceNode)
         {
-            var candidate = root.FindNode(source);
+            var candidate = sourceNode;
             while (candidate != null)
             {
                 var usings = candidate.DescendantNodes().OfType<UsingDirectiveSyntax>();
                 if (usings.Any())
-                    return usings.LastOrDefault(u => u.SpanStart < source.Start) ?? usings.Last();
+                    return usings.LastOrDefault(u => u.SpanStart < sourceNode.SpanStart) ?? usings.Last();
 
                 candidate = candidate.Parent;
             }
 
             return null;
+        }
+
+        static IEnumerable<UsingDirectiveSyntax> GetAllVisibleUsings(SyntaxNode sourceNode)
+        {
+            var candidate = sourceNode;
+            while (candidate != null)
+            {
+                foreach (var u in candidate.DescendantNodes().OfType<UsingDirectiveSyntax>())
+                    yield return u;
+
+                candidate = candidate.Parent;
+            }
         }
 
         static IEnumerable<UsingDirectiveSyntax> GetUsings(UsingDirectiveSyntax lastUsingInBlock)
