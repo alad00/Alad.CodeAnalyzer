@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
@@ -48,26 +49,41 @@ namespace Alad.CodeAnalyzer
 
         async Task<Document> ConvertToProperty(Document document, VariableDeclaratorSyntax variableDeclarator, CancellationToken cancellationToken)
         {
-            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-            var fieldDeclaration = variableDeclarator.FindParent<FieldDeclarationSyntax>();
+            FieldDeclarationSyntax fieldDeclaration = variableDeclarator.FindParent<FieldDeclarationSyntax>();
 
-            var propertyDeclaration = SyntaxFactory.PropertyDeclaration(
+            SyntaxTokenList modifiers = fieldDeclaration.Modifiers;
+
+            var accessors = new List<AccessorDeclarationSyntax>()
+            {
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(fieldDeclaration.SemicolonToken),
+            };
+
+            int readOnlyModifierIndex = modifiers.IndexOf(SyntaxKind.ReadOnlyKeyword);
+            if (readOnlyModifierIndex != -1)
+            {
+                modifiers = modifiers.RemoveAt(readOnlyModifierIndex);
+            }
+            else
+            {
+                AccessorDeclarationSyntax setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(fieldDeclaration.SemicolonToken);
+                accessors.Add(setter);
+            }
+
+            PropertyDeclarationSyntax propertyDeclaration = SyntaxFactory.PropertyDeclaration(
                 fieldDeclaration.AttributeLists,
-                fieldDeclaration.Modifiers,
+                modifiers,
                 fieldDeclaration.Declaration.Type,
                 null,
                 variableDeclarator.Identifier,
-                SyntaxFactory.AccessorList(SyntaxFactory.List(new[] {
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(fieldDeclaration.SemicolonToken),
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(fieldDeclaration.SemicolonToken)
-                })),
+                SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)),
                 null,
                 variableDeclarator.Initializer,
                 variableDeclarator.Initializer == null ? default : fieldDeclaration.SemicolonToken
             );
 
-            var newRoot = root.ReplaceNode(fieldDeclaration, propertyDeclaration);
+            SyntaxNode newRoot = root.ReplaceNode(fieldDeclaration, propertyDeclaration);
 
             return document.WithSyntaxRoot(newRoot);
         }

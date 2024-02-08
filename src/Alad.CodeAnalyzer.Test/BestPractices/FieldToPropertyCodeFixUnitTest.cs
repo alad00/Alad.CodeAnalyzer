@@ -116,4 +116,21 @@ class MyClass {
         var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.BestPractices.PublicField).WithLocation(0).WithArguments("Field", "public");
         await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
+
+    [TestMethod]
+    public async Task CodeFixConvertReadonlyFieldToProperty()
+    {
+        var test = @"
+class MyClass {
+    public readonly int {|#0:Field|};
+}";
+
+        var fixtest = @"
+class MyClass {
+    public int Field { get; }
+}";
+
+        var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.BestPractices.PublicField).WithLocation(0).WithArguments("Field", "public");
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+    }
 }
