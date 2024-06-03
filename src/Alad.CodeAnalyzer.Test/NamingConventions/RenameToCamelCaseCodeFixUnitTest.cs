@@ -32,6 +32,15 @@ record MyRecord(int SomeProperty);";
     }
 
     [TestMethod]
+    public async Task NoDiagnosticsWhenRecordStructConstructor()
+    {
+        var test = @"
+record struct MyRecordStruct(int SomeProperty);";
+
+        await VerifyCS.VerifyAnalyzerAsync(test + RecordStubs.Code);
+    }
+
+    [TestMethod]
     public async Task NoDiagnosticsWhenOverrideWithSameName()
     {
         var test = @"    

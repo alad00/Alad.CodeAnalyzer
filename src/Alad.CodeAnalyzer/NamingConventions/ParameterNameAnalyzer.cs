@@ -70,10 +70,20 @@ namespace Alad.CodeAnalyzer.NamingConventions
                 .Any(m => m.ReturnType.Equals(type, SymbolEqualityComparer.Default));
 
             // se ha il metodo generato di clone, è probabilmente un `record`
-            if (!hasGeneratedCloneMethod)
-                return false;
+            if (hasGeneratedCloneMethod)
+                return true;
 
-            return true;
+            // Se è una `struct` ed ha un metodo generato "PrintMembers()" è probabilmente una `record struct`.
+            if (type.IsValueType) {
+                var hasGeneratedPrintMembersMethod = type.GetMembers("PrintMembers")
+                    .OfType<IMethodSymbol>()
+                    .Any(m => m.GetResultantVisibility() == SymbolVisibility.Private && m.Parameters.Length == 1);
+
+                if (hasGeneratedPrintMembersMethod)
+                    return true;
+            }
+
+            return false;
         }
 
         static bool IsMethodOverrideWithParameterWithSameName(IParameterSymbol parameter)
