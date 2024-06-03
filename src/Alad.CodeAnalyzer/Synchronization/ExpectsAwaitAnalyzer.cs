@@ -26,7 +26,7 @@ namespace Alad.CodeAnalyzer.Synchronization
         static readonly DiagnosticDescriptor s_tainted = new DiagnosticDescriptor(
             id: AladDiagnosticCodes.Synchronization.ExpectsAwaitTaint,
             title: "Questo metodo chiama metodi che non supportano operazioni in parallelo",
-            messageFormat: "Contrassegnare il metodo '{0}' con attributo [AwaitExpected]",
+            messageFormat: "Contrassegnare il metodo '{0}' con attributo [ExpectsAwait]",
             category: nameof(AladDiagnosticCodes.Synchronization),
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
