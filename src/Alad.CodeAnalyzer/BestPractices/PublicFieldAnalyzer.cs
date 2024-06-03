@@ -45,6 +45,19 @@ namespace Alad.CodeAnalyzer.BestPractices
             if (!field.DeclaredAccessibility.HasFlag(Accessibility.Public) && !field.DeclaredAccessibility.HasFlag(Accessibility.Protected))
                 return;
 
+            // Microsoft dice di usare campi `public static readonly` per i valori predefiniti
+            // di tipi immutabili: https://learn.microsoft.com/dotnet/standard/design-guidelines/field
+            //
+            // Tuttavia, sembra che Microsoft stessa non rispetti sempre questa regola:
+            // - `string.Empty`, `DateTime.MinValue` e `ImmutableArray<T>.Empty` sono campi;
+            // - `Encoding.Default`, `Task.CompletedTask` e `ValueTask.CompletedTask` sono property.
+            //
+            // Fatta eccezione per stringhe ed array, non ho trovato nessun campo
+            // `public static readonly` di reference type, dunque penso che sia il caso di permetterlo
+            // solamente per value type.
+            if (field.IsStatic && field.IsReadOnly && (field.Type.IsValueType || field.Type.SpecialType == SpecialType.System_String))
+                return;
+
             var location = field.Locations[0];
             var diagnostic = Diagnostic.Create(s_rule, location, field.Name, field.DeclaredAccessibility.GetCSharpName());
             context.ReportDiagnostic(diagnostic);

@@ -67,6 +67,41 @@ enum MyEnum {
     }
 
     [TestMethod]
+    public async Task StaticReadonlyPredefinedObjectInstanceFields()
+    {
+        var test = @"
+class MyClass {
+    // BAD
+    public static readonly MyClass {|#0:Default|} = new MyClass();
+}
+
+struct MyStruct {
+    // OK
+    public static readonly MyStruct Default = new MyStruct();
+
+    // OK
+    public static readonly string EmptyString = """";
+}";
+
+        var fixtest = @"
+class MyClass {
+    // BAD
+    public static MyClass Default { get; } = new MyClass();
+}
+
+struct MyStruct {
+    // OK
+    public static readonly MyStruct Default = new MyStruct();
+
+    // OK
+    public static readonly string EmptyString = """";
+}";
+
+        var expected = VerifyCS.Diagnostic(AladDiagnosticCodes.BestPractices.PublicField).WithLocation(0).WithArguments("Default", "public");
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+    }
+
+    [TestMethod]
     public async Task CodeFixConvertPublicFieldToProperty()
     {
         var test = @"
