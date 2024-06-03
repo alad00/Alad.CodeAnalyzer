@@ -39,13 +39,13 @@ namespace Alad.CodeAnalyzer.Security
         {
             var operation = (IObjectCreationOperation)context.Operation;
 
-            var syntax = (BaseObjectCreationExpressionSyntax)operation.Syntax;
-
             // se non è un `throw new Exception()` lasciamo passare
             if (
                 operation.Type.ContainingNamespace.Name != nameof(System) ||
                 operation.Type.Name != nameof(Exception)
             ) return;
+
+            var syntax = (BaseObjectCreationExpressionSyntax)operation.Syntax;
 
             var location = syntax is ObjectCreationExpressionSyntax withType ? withType.Type.GetLocation() : syntax.NewKeyword.GetLocation();
             var diagnostic = Diagnostic.Create(s_rule, location, operation.Type.Name);

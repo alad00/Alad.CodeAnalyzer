@@ -87,4 +87,23 @@ class MyClass {
 
         await VerifyCS.VerifyAnalyzerAsync(test);
     }
+
+    [TestMethod]
+    public async Task DoesNotCrashWhenParsingAttributeConstructors()
+    {
+        var test = @"
+using System.Diagnostics.CodeAnalysis;
+using System;
+
+#nullable enable
+
+static class MyClass {
+    public static bool TryGetName([NotNullWhen(true)] out string? name) {
+        name = ""test"";
+        return true;
+    }
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 }
