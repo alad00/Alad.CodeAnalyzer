@@ -30,6 +30,9 @@ namespace Alad.CodeAnalyzer
         {
             /// <summary>API destinate ad uso interno.</summary>
             public const string InternalApiUsage = "ALAD0100";
+
+            /// <summary>API destinate ad uso interno.</summary>
+            public const string ExperimentalApiUsage = "ALAD0110";
         }
 
         /// <summary>
