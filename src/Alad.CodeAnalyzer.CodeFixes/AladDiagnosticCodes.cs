@@ -21,6 +21,9 @@ namespace Alad.CodeAnalyzer
         /// <summary>Converti nome parametro in formato 'camelCase'.</summary>
         public const string RenameCamelCase = "ALAD_RENAME_CAMEL_CASE";
 
+        /// <summary>Normalizza nome.</summary>
+        public const string NameNormalize = "ALAD_NAME_NORMALIZE";
+
         /// <summary>Aggiungi attributo '[ExpectsAwait]'.</summary>
         public const string AddExpectsAwaitAttribute = "ALAD_ADD_EXPECTS_AWAIT_ATTRIBUTE";
     }

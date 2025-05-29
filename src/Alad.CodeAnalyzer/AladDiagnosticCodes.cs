@@ -113,6 +113,9 @@ namespace Alad.CodeAnalyzer
 
             /// <summary>Nome costante non rispetta le convenzioni.</summary>
             public const string ConstName = "ALAD1007";
+
+            /// <summary>Nome contenente caratteri speciali.</summary>
+            public const string NameSpecialCharacters = "ALAD1008";
         }
 
         /// <summary>
