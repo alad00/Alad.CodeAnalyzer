@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Alad.CodeAnalyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RenameToPascalCaseCodeFixProvider)), Shared]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(AddExpectsAwaitAttributeFixProvider)), Shared]
     public class AddExpectsAwaitAttributeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
