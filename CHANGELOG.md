@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 Alad.CodeAnalyzer
 =================
 
-## 0.10.0 (DRAFT)
+## 0.10.0
 * [ALAD0110](docs/codes/ALAD0110.md) (nuovo): API sperimentali
 * [ALAD1008](docs/codes/ALAD1008.md) (nuovo): caratteri speciali nei nomi
 * [ALAD0220](docs/codes/ALAD0220.md): fix campi statici pubblici readonly per le
